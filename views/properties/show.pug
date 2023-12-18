@@ -1,0 +1,49 @@
+extends ../layout/app
+
+block styles
+    link(rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css")
+
+block content 
+    //- pre= JSON.stringify(property, undefined, 2)
+    div(class="md:px-5 md:py-2 p-4")
+        h1(class="text-4xl my-10 font-extrabold text-center")=property.title 
+
+        div(class="px-4")
+            a(href="#" class="font-bold text-gray-600 text-sm") Category: 
+                span(class="font-normal")=property.category.name
+        
+        div(class="mt-5 md:flex md:gap-4 bg-white shadow-lg rounded-lg p-4 md:border-gray-100 md:border-2")
+            div(class="grid grid-cols-1 place-items-center md:p-4 md:border-gray-100 md:border-2 md:rounded-lg")
+                div(class="md:w-2/ shadow rounded-lg flex place-content-center")
+                    img(src=`/uploads/${property.images}` alt=`image of the property ${property.title}`)
+
+                div(class="py-10 w-full") 
+                    p(class="text-2xl leading-6 font-bold text-gray-900 py-5") Description
+                        p=property.description
+
+                    h2(class="text-2xl leading-6 font-bold text-gray-900 py-5") Property's information
+
+                    div(class="grid grid-cols-1 md:grid-cols-2 gap-4 space-y-5")
+                        p(class="text-gray-600 font-bold text-xs") Rooms
+                            span(class="text-gray-800 block text-lg")=property.rooms
+                        p(class="text-gray-600 font-bold text-xs") Bathrooms
+                            span(class="text-gray-800 block text-lg")=property.bathrooms
+                        p(class="text-gray-600 font-bold text-xs") Parking lots
+                            span(class="text-gray-800 block text-lg")=property.parking_lots
+                        p(class="text-gray-600 font-bold text-xs") Price
+                            span(class="text-gray-800 block text-lg")=property.price.value
+
+            div(class="md:w-3/5 md:px-4 md:p-4 md:border-gray-100 md:border-2 md:rounded-lg")
+                h3(class="text-center py-10 leading-6 text-2xl font-bold text-gray-900") Location
+                
+                div(class="h-96" id="map")
+                    p(class="hidden" id="lat")= property.lat
+                    p(class="hidden" id="lng")= property.lng
+
+                div(class="md:py-3 sm:p-6")
+                    p(class="text-gray-600 font-bold text-xs") Address
+                        span(class="text-gray-800 block text-lg" id="street")=property.street
+
+block scripts
+    script(src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js")
+    script(src="/js/showMap.js")
