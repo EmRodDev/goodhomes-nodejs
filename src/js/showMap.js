@@ -11,7 +11,7 @@
     }).addTo(map);
 
     //Add pin
-    marker = new L.marker([lat,lng])
+    const marker = new L.marker([lat,lng])
     .addTo(map)
     .bindPopup(street);
 

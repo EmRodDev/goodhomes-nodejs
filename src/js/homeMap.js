@@ -5,6 +5,7 @@
         
         const map = L.map('home-map').setView([lat, lng ], 20);
         let markers = new L.FeatureGroup().addTo(map);
+        let properties = [];
                 
         //Filters 
         const filters = {
@@ -15,15 +16,20 @@
 
         const categoriesSelect = document.querySelector('#categories');
         const pricesSelect = document.querySelector('#prices');
-
+        
         //Filtering of Categories and Prices
 
         categoriesSelect.addEventListener('change', e => {
-            filters.category = +e.target.value
-        });
+            filters.category = +e.target.value;
 
+            filterProperties();
+        });
+        
         pricesSelect.addEventListener('change', e => {
-            filters.price = +e.target.value
+            filters.price = +e.target.value;
+
+            filterProperties();
+
         });
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -34,7 +40,7 @@
             try{
                 const url = '/api/properties';
                 const response = await fetch(url);
-                const properties = await response.json();
+                properties = await response.json();
 
 
                 showProperties(properties);
@@ -45,6 +51,9 @@
         }
 
         const showProperties = properties => {
+            //Clean previous markers
+            markers.clearLayers();
+
             properties.forEach(property =>{
                 
                 if(property.published){
@@ -66,6 +75,18 @@
 
             });
         }
+
+        const filterProperties = () => {
+            const result = properties
+            .filter(filterCategory)
+            .filter(filterPrice);
+
+
+           showProperties(result);
+        }
+
+        const filterCategory = property => filters.category ? property.categoryId === filters.category : property;
+        const filterPrice = property => filters.price ? property.priceId === filters.price : property;
 
         getProperties();
 })()
