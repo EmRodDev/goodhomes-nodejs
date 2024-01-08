@@ -1,6 +1,7 @@
 import {validationResult} from "express-validator";
 import {unlink} from 'node:fs/promises';
-import {Price, Category, Property} from "../models/relations.js";
+import {Price, Category, Property, Message} from "../models/relations.js";
+import { isSeller } from "../helpers/index.js";
 
 const admin = async (req, res) => {
 
@@ -352,19 +353,90 @@ const showProperty = async(req,res) => {
     });
 
     if(!property){
-        return res.redirect('404');
+        return res.redirect('/404');
     }
 
     if(property.published == 0){
-        return res.redirect('404');
+        if(isSeller(req.user?.id, property.userId)){
+            return res.redirect(`/properties/add-image/${id}`);
+        }
+        else{
+            return res.redirect('/404');
+        }
     }
     
 
 
     res.render('properties/show',{
         property,
-        page: property.title
+        page: property.title,
+        csrfToken: req.csrfToken(),
+        user: req.user,
+        isSeller: isSeller(req.user?.id, property.userId)
     });
 }
 
-export {admin, create, save, addImage, storeImage, edit, saveChanges, deleteProperty, showProperty}
+const sendMessage = async(req,res) => {
+    const {id} = req.params;
+
+    //Validate if the property exists
+    const property = await Property.findByPk(id,{
+        include: [
+            {model: Category, as: 'category'},
+            {model: Price, as: 'price'}
+        ]
+    });
+
+    if(!property){
+        return res.redirect('/404');
+    }
+
+    if(property.published == 0){
+        if(isSeller(req.user?.id, property.userId)){
+            return res.redirect(`/properties/add-image/${id}`);
+        }
+        else{
+            return res.redirect('/404');
+        }
+    }
+    
+    //Render the errors
+
+    //Validation
+    let result = validationResult(req);
+
+    if(!result.isEmpty()){
+        return res.render('properties/show',{
+            property,
+            page: property.title,
+            csrfToken: req.csrfToken(),
+            user: req.user,
+            isSeller: isSeller(req.user?.id, property.userId),
+            errors: result.array()
+        });
+    }
+
+    const {message} = req.body;
+    const {id: propertyId} = req.params;
+    const {id: userId} = req.user;
+
+    //Store the message
+    await Message.create({
+        message,
+        propertyId,
+        userId,
+    });
+
+    return res.render('properties/show',{
+        property,
+        page: property.title,
+        csrfToken: req.csrfToken(),
+        user: req.user,
+        isSeller: isSeller(req.user?.id, property.userId),
+        sent: true
+    });
+
+
+}
+
+export {admin, create, save, addImage, storeImage, edit, saveChanges, deleteProperty, showProperty, sendMessage}
