@@ -33,18 +33,14 @@ block content
         section(class="py-5")
             h2(class="text-center text-4xl font-extrabold pt-10") Houses on sale
             div(class="grid grid-cols-1 lg:grid-cols-3 gap-5 mt-14")
-                each house in houses 
-                    div(class="bg-white shadow rounded-lg")
-                        img(class="object-cover h-72 w-full" src=`/uploads/${house.images}` alt=`${house.title}'s image`)
-                        div(class="p-5 space-y-2")
-                            h3(class="text-2xl font-bold")= house.title
-                            p(class="text-sm text-gray-600") Rooms: 
-                                span(class="text-gray-800 font-bold")= house.rooms
-                            p(class="text-sm text-gray-600") Bathrooms: 
-                                span(class="text-gray-800 font-bold")= house.bathrooms
-                            p(class="text-sm text-gray-600") Price: 
-                                span(class="text-gray-800 font-bold")= house.price.value
-                            a(href=`/property/${house.id}` class="bg-green-600 w-full text-center block font-bold text-white p-2 uppercase rounded-lg") View property
+                each property in houses
+                    include ./templates/card
+
+        section(class="py-5")
+            h2(class="text-center text-4xl font-extrabold pt-10") Apartments on sale
+            div(class="grid grid-cols-1 lg:grid-cols-3 gap-5 mt-14")
+                each property in apartments 
+                    include ./templates/card
 
 
 block scripts

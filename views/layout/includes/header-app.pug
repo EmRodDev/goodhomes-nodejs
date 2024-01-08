@@ -1,6 +1,7 @@
 header(class=' mx-auto bg-green-600 p-4 flex justify-between items-center')
-            h1(class='text-2xl text-white font-extrabold text-center') Good
-                span(class='font-normal') Homes
+            a(href="/")
+                h1(class='text-2xl text-white font-extrabold text-center') Good
+                    span(class='font-normal') Homes
             
             nav(class="text-sm md:flex md:items-center md:gap-3 font-bold text-white hidden")
                 a(href="/auth/register") Sign up
@@ -8,7 +9,13 @@ header(class=' mx-auto bg-green-600 p-4 flex justify-between items-center')
 
 div(class="bg-green-700 py-5 hidden lg:block")
     div(class="container mx-auto flex justify-between")
-        a(href="/categories/1" class="text-sm font-bold uppercase") Houses
-        a(href="/categories/2" class="text-sm font-bold uppercase") Apartments
-        a(href="/categories/3" class="text-sm font-bold uppercase") Cottages
-        a(href="/categories/4" class="text-sm font-bold uppercase") Houses
+        nav(class="flex gap-4 items-center")
+            a(href="/categories/1" class="text-sm font-bold uppercase") Houses
+            a(href="/categories/2" class="text-sm font-bold uppercase") Apartments
+            a(href="/categories/3" class="text-sm font-bold uppercase") Warehouses
+            a(href="/categories/4" class="text-sm font-bold uppercase") Terrains
+            a(href="/categories/5" class="text-sm font-bold uppercase") Cottages
+        form(action="/search" method="POST" class="flex gap-3 items-center")
+            input(type="hidden" name="_csrf" value=csrfToken)
+            input(type="text" id="term" name="term" placeholder="Search properties..." class="p-2 rounded-lg shadow text-sm")
+            input(type="submit" class="bg-green-800 hover:bg-green-400 rounded-lg text-white uppercase font-bold p-2 cursor-pointer text-sm" value="Search")
