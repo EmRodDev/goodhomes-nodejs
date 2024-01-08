@@ -1,9 +1,10 @@
 import express from "express";
 import {body} from "express-validator";
 
-import {admin, create, save, addImage, storeImage, edit, saveChanges, deleteProperty, showProperty} from '../controllers/propertyController.js';
+import {admin, create, save, addImage, storeImage, edit, saveChanges, deleteProperty, showProperty, sendMessage} from '../controllers/propertyController.js';
 import protectRoute from "../middleware/protectRoute.js";
 import upload from '../middleware/uploadImage.js';
+import {identifyUser} from '../middleware/identifyUser.js';
 
 
 const router = express.Router();
@@ -62,6 +63,14 @@ router.post('/properties/edit/:id', protectRoute,
 router.post('/properties/delete/:id', protectRoute, deleteProperty);
 
 //Public area
-router.get('/property/:id', showProperty);
+router.get('/property/:id', identifyUser ,showProperty);
+
+//Store the message
+
+router.post('/property/:id', 
+identifyUser,
+body('message').isLength({min: 10}).withMessage('The message cannot be empty or it\'s too short'),
+sendMessage);
+
 
 export default router;
