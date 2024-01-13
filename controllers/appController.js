@@ -35,14 +35,14 @@ const home = async (req, res) => {
 
     ]);
 
-
     res.render('home',{
         page: 'Home',
         categories,
         prices,
         houses,
         apartments,
-        csrfToken: req.csrfToken()
+        csrfToken: req.csrfToken(),
+        isLogged: req.cookies?._token
     });
 }
 
@@ -69,14 +69,16 @@ const category = async (req, res) => {
     res.render('category', {
         page: `${category.name}s on Sale`,
         properties,
-        csrfToken: req.csrfToken()
+        csrfToken: req.csrfToken(),
+        isLogged: req.cookies?._token
     })
 }
 
 const notFound = (req, res) => {
     res.render('404', {
         page: 'Not Found',
-        csrfToken: req.csrfToken()
+        csrfToken: req.csrfToken(),
+        isLogged: req.cookies?._token
     })
 
 }
@@ -108,7 +110,8 @@ const searcher = async (req, res) => {
     res.render('searcher',{
         page: 'Results from the search',
         properties,
-        csrfToken: req.csrfToken()
+        csrfToken: req.csrfToken(),
+        isLogged: req.cookies?._token
     })
 }
 
