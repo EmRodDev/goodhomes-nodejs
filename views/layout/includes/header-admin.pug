@@ -1,9 +1,73 @@
 header(class='mx-auto bg-green-600 p-4 flex justify-between items-center')
-            a(href="/")
-                h1(class='text-2xl text-white font-extrabold text-center') Good
-                    span(class='font-normal') Homes
-            
-            nav(class=' text-sm md:flex md:items-center md:gap-3 font-bold text-white hidden')
-                a(href='/my-properties') My properties
-                a(href='') My profile
-                a(class='bg-green-800 py-2 px-10 rounded-lg' href='/auth/logout') Log out
+    a(href="/")
+        h1(class='text-2xl text-white font-extrabold text-center') Good
+            span(class='font-normal') Homes
+
+    -//Desktop
+    nav(class=' text-sm md:flex md:items-center md:gap-3 font-bold text-white hidden')
+        a(href='/my-properties') My properties
+        form(action="/auth/log-out" method="POST")
+            input(type="hidden" name="_csrf" value=csrfToken)
+            input(type="submit" value="Log out" class='bg-green-800 py-2 px-10 rounded-lg' href='/auth/logout')
+
+    -//Mobile
+    nav(class="block md:hidden md:items-center md:gap-3 font-bold ")
+        button(id="hamburger-menu" class="flex items-center text-white p-3")
+            svg(class="block h-6 w-6 fill-current" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg")
+                title Hamburger menu 
+                path(d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z")
+    
+    div(id="lateral-menu" class="hidden md:hidden flex-col fixed bottom-0 left-0 h-full w-60 z-10")
+        div(class="flex flex-col w-full bg-green-700 items-center p-2")
+            div(class="flex h-14 items-center gap-7")
+                a(href="/")
+                    h1(class='text-2xl text-white font-extrabold text-center') Good
+                        span(class='font-normal') Homes
+                button(id="close-button")
+                    svg(xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-10 w-10 text-white text-center")
+                        path(stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12")
+            form(action="/search" method="POST" class="flex py-6 w-full")
+                input(type="hidden" name="_csrf" value=csrfToken)
+                input(type="text" id="term" name="term" placeholder="Search properties..." class="text-sm h-10 w-4/6 outline-none text-center")
+                input(type="submit" class="bg-green-800 hover:bg-green-400 text-white uppercase font-bold  cursor-pointer text-sm w-2/6" value="Search")
+
+        div(class="flex flex-col w-full h-full bg-gray-200")
+            div(class="flex w-full")
+                button(id="dropdown-button" class="flex flex-col bg-gray-400 h-20 w-full items-center align-middle items" type="button") 
+                    p(class="relative text-center font-extrabold top-1/3") Categories
+                    div(id="dropdown" class="hidden fixed left-[240px] bg-white shadow dark:bg-gray-500")
+                        ul(class="text-sm font-bold text-gray-400 dark:text-gray-200" )
+                            li
+                                a(href="/categories/1" class="flex flex-col px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white h-20 w-40") 
+                                    p(class="relative top-1/3") Houses
+                                a(href="/categories/2" class="flex flex-col px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white h-20 w-40") 
+                                    p(class="relative top-1/3") Apartments
+                                a(href="/categories/3" class="flex flex-col px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white h-20 w-40") 
+                                    p(class="relative top-1/3") Warehousees
+                                a(href="/categories/4" class="flex flex-col px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white h-20 w-40") 
+                                    p(class="relative top-1/3") Terrains
+                                a(href="/categories/5" class="flex flex-col px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white h-20 w-40") 
+                                    p(class="relative top-1/3") Cottages
+
+            div(class="w-full h-full bg-gray-300")
+                a(href="/my-properties" class="flex flex-col items-center")
+                    button( class="h-20 font-extrabold ") My properties
+                form(action="/auth/log-out" method="POST" class="flex flex-col items-center")
+                    input(type="hidden" name="_csrf" value=csrfToken)
+                    input(type="submit" value="Log out" class='h-20 font-extrabold text-center cursor-pointer' href='/auth/logout')
+
+-//Search and categories bar
+div(class="bg-green-700 py-5 hidden md:block")
+    div(class="container mx-auto flex justify-between")
+        nav(class="flex gap-4 items-center")
+            a(href="/categories/1" class="text-sm font-bold uppercase") Houses
+            a(href="/categories/2" class="text-sm font-bold uppercase") Apartments
+            a(href="/categories/3" class="text-sm font-bold uppercase") Warehouses
+            a(href="/categories/4" class="text-sm font-bold uppercase") Terrains
+            a(href="/categories/5" class="text-sm font-bold uppercase") Cottages
+        form(action="/search" method="POST" class="flex gap-3 items-center")
+            input(type="hidden" name="_csrf" value=csrfToken)
+            input(type="text" id="term" name="term" placeholder="Search properties..." class="p-2 rounded-lg shadow text-sm")
+            input(type="submit" class="bg-green-800 hover:bg-green-400 rounded-lg text-white uppercase font-bold p-2 cursor-pointer text-sm" value="Search")
+
+    script(src="/js/sideMenu.js")
