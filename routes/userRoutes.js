@@ -1,10 +1,14 @@
 import express from 'express';
-import { loginForm, registerForm, confirm, forgotPasswordForm, signUp, resetPassword, checkToken, newPassword, authenticate} from '../controllers/userController.js';
+import { loginForm, logOut, registerForm, confirm, forgotPasswordForm, signUp, resetPassword, checkToken, newPassword, authenticate} from '../controllers/userController.js';
 
 const router = express.Router();
 
 router.get('/login', loginForm);
 router.post('/login', authenticate);
+
+// Log out
+
+router.post('/log-out', logOut);
 
 router.get('/register', registerForm);
 router.post('/register', signUp);
