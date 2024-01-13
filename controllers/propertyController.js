@@ -1,7 +1,7 @@
 import {validationResult} from "express-validator";
 import {unlink} from 'node:fs/promises';
-import {Price, Category, Property, Message} from "../models/relations.js";
-import { isSeller } from "../helpers/index.js";
+import {Price, Category, Property, Message, User} from "../models/relations.js";
+import { isSeller, formatDate } from "../helpers/index.js";
 
 const admin = async (req, res) => {
 
@@ -31,7 +31,8 @@ const admin = async (req, res) => {
             },
             include: [
                 {model: Category, as: 'category'},
-                {model: Price, as: 'price'}
+                {model: Price, as: 'price'},
+                {model: Message, as: 'messages'}
             ]
         }),
         Property.count({
@@ -338,6 +339,35 @@ const deleteProperty = async (req, res) => {
     return res.redirect('/my-properties');
 }
 
+//Modifies the state of the property 
+const changeState = async (req,res) => {
+
+    const {id} = req.params;
+
+    //Validate if the property exists
+
+    const property = await Property.findByPk(id);
+
+    if(!property){
+        return res.redirect('/my-properties');
+    }
+
+    //Check if the user who visits the URL is who created the property
+
+    if(property.userId.toString() !== req.user.id.toString()){
+        return res.redirect('/my-properties');
+    }
+
+    //Update
+    property.published = !property.published;
+
+    await property.save();
+
+    res.json({
+        result: 'OK'
+    });
+}
+
 //Shows a property
 
 const showProperty = async(req,res) => {
@@ -352,19 +382,9 @@ const showProperty = async(req,res) => {
         ]
     });
 
-    if(!property){
+    if(!property || !property.published){
         return res.redirect('/404');
     }
-
-    if(property.published == 0){
-        if(isSeller(req.user?.id, property.userId)){
-            return res.redirect(`/properties/add-image/${id}`);
-        }
-        else{
-            return res.redirect('/404');
-        }
-    }
-    
 
 
     res.render('properties/show',{
@@ -372,7 +392,8 @@ const showProperty = async(req,res) => {
         page: property.title,
         csrfToken: req.csrfToken(),
         user: req.user,
-        isSeller: isSeller(req.user?.id, property.userId)
+        isSeller: isSeller(req.user?.id, property.userId),
+        isLogged: req.cookies?._token
     });
 }
 
@@ -412,7 +433,8 @@ const sendMessage = async(req,res) => {
             csrfToken: req.csrfToken(),
             user: req.user,
             isSeller: isSeller(req.user?.id, property.userId),
-            errors: result.array()
+            errors: result.array(),
+            isLogged: req.cookies?._token
         });
     }
 
@@ -433,10 +455,48 @@ const sendMessage = async(req,res) => {
         csrfToken: req.csrfToken(),
         user: req.user,
         isSeller: isSeller(req.user?.id, property.userId),
-        sent: true
+        sent: true,
+        isLogged: req.cookies?._token
     });
 
 
 }
 
-export {admin, create, save, addImage, storeImage, edit, saveChanges, deleteProperty, showProperty, sendMessage}
+//Read received messages
+
+const seeMessages = async (req,res) => {
+
+    const {id} = req.params;
+
+    //Validate if the property exists
+
+    const property = await Property.findByPk(id,{
+        include: [
+            {model: Message, as: 'messages', include: [
+                {
+                    model: User.scope('deletePassword'), as: 'user'
+                }
+            ]
+        },
+        ]
+    });
+
+    if(!property){
+        return res.redirect('/my-properties');
+    }
+
+    //Check if the user who visits the URL is who created the property
+
+    if(property.userId.toString() !== req.user.id.toString()){
+        return res.redirect('/my-properties');
+    }
+    
+    res.render('properties/messages',{
+        page: 'Messages',
+        messages: property.messages,
+        formatDate,
+        isLogged: req.cookies?._token
+    });
+}
+
+export {admin, create, save, addImage, storeImage, edit, saveChanges, deleteProperty, changeState, showProperty, sendMessage, seeMessages}
