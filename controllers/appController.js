@@ -85,7 +85,7 @@ const notFound = (req, res) => {
 
 const searcher = async (req, res) => {
     const {term} = req.body;
-
+    
     //Validate that the term is not empty
 
     if(!term.trim()){
