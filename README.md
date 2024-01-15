@@ -15,7 +15,7 @@
     A real property monolitic web application made on an Udemy course
     <br />
     <br />
-    <a href="https://github.com/github_username/repo_name">View Demo</a>
+    <a href="https://goodhomes-dev-qajn.2.us-1.fl0.io/">View Demo</a>
   </p>
 </div>
 
