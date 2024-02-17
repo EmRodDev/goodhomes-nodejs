@@ -109,7 +109,7 @@ To get a local copy up and running follow these simple example steps.
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/github_username/repo_name.git](https://github.com/EmRodDev/goodhomes-nodejs
+   git clone https://github.com/EmRodDev/goodhomes-nodejs
    ```
 2. Install NPM packages
    ```sh
